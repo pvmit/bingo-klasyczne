@@ -539,7 +539,7 @@
       class: nickClash ? "error" : "error hidden",
     }, nickClash ? ["Pseudonim \"" + nickClash + "\" jest juz zajety. Wybierz inny."] : []);
     const kids = [
-      el("h1", null, ["BINGO"]),
+      el("h1", null, ["bingoZjazdowe"]),
       el("p", { class: "lead" }, ["Wpisz pseudonim i dolacz"]),
       el("label", { class: "field" }, [
         el("span", null, ["Pseudonim"]),
@@ -845,9 +845,9 @@
             type: "button",
             onClick: function () { go("#/"); },
           }, ["← Menu"]),
-          el("strong", null, ["ADMIN · klasyczne"]),
+          el("strong", null, ["ADMIN"]),
         ]),
-        el("h1", { class: "admin-title" }, ["BINGO"]),
+        el("h1", { class: "admin-title" }, ["bingoZjazdowe"]),
         el("p", { class: "lead" }, [
           "Startuj gre. Telefony: ten sam link, pseudonim, GRACZ.",
         ]),
@@ -944,7 +944,7 @@
   function showBootError(err) {
     const msg = err && err.message ? err.message : String(err);
     app.innerHTML =
-      '<section class="screen"><h1>BINGO</h1>' +
+      '<section class="screen"><h1>bingoZjazdowe</h1>' +
       '<p class="error">Blad: ' + msg.replace(/</g, "&lt;") + "</p></section>";
   }
 

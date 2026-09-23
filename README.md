@@ -1,13 +1,13 @@
-# Bingo klasyczne
+# bingoZjazdowe
 
 Osobna gra: **własna plansza**, cele odznacza **admin**. Bez kodu pokoju.
 
 ## Jak grac
 
-[pvmit.github.io/bingo-klasyczne](https://pvmit.github.io/bingo-klasyczne/)
+[pvmit.github.io/bingoZjazdowe](https://pvmit.github.io/bingoZjazdowe/)
 
-1. Laptop (ukryty panel): [pvmit.github.io/bingo-klasyczne/#/admin](https://pvmit.github.io/bingo-klasyczne/#/admin) → **Nowa gra**.
-2. Telefony: [pvmit.github.io/bingo-klasyczne](https://pvmit.github.io/bingo-klasyczne/) → pseudonim → **GRACZ**.
+1. Laptop (ukryty panel): [pvmit.github.io/bingoZjazdowe/#/admin](https://pvmit.github.io/bingoZjazdowe/#/admin) → **Nowa gra**.
+2. Telefony: [pvmit.github.io/bingoZjazdowe](https://pvmit.github.io/bingoZjazdowe/) → pseudonim → **GRACZ**.
 
 Baza jest wpisana w repo (`config.json`). Telefony nic nie konfigurują.
 
