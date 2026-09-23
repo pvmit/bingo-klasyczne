@@ -28,6 +28,8 @@
   let syncError = "";
   let reconnectTimer = null;
   let joining = false;
+  let nickClash = "";
+  let joinBusy = false;
 
   if (!playerId) {
     playerId = (crypto.randomUUID && crypto.randomUUID()) || ("p" + Math.random().toString(36).slice(2, 12));
@@ -285,18 +287,34 @@
     return false;
   }
 
+  function nickKey(nick) {
+    return String(nick || "").trim().toLocaleLowerCase("pl");
+  }
+
+  function nickTakenByOther(nick, pid) {
+    if (!game || !game.players) return false;
+    const key = nickKey(nick);
+    if (!key) return false;
+    return Object.keys(game.players).some(function (id) {
+      if (id === pid) return false;
+      return nickKey(game.players[id] && game.players[id].nick) === key;
+    });
+  }
+
   function ensurePlayerBoard(pid, nick) {
-    if (!game) return false;
+    if (!game) return "no-game";
     if (!game.players) game.players = {};
     const existing = game.players[pid];
     if (existing && existing.board && existing.board.length === CELL_COUNT) {
       if (nick && existing.nick !== nick) {
+        if (nickTakenByOther(nick, pid)) return "taken";
         existing.nick = nick;
         game.updatedAt = Date.now();
         saveGameCache();
       }
-      return false;
+      return "exists";
     }
+    if (nickTakenByOther(nick, pid)) return "taken";
     const seed = "k-" + game.code + "-" + pid + "-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
     game.players[pid] = {
       nick: (nick || "Gracz").slice(0, 20),
@@ -306,7 +324,7 @@
     };
     game.updatedAt = Date.now();
     saveGameCache();
-    return true;
+    return "created";
   }
 
   function applyCall(text, on) {
@@ -349,7 +367,14 @@
         if (remote) acceptIncomingGame(remote);
         if (!game) return;
         if (game.players && game.players[playerId] && game.players[playerId].board) return;
-        ensurePlayerBoard(playerId, nickDraft);
+        const result = ensurePlayerBoard(playerId, nickDraft);
+        if (result === "taken") {
+          nickClash = nickDraft;
+          alert("Pseudonim \"" + nickDraft + "\" jest juz zajety. Wybierz inny.");
+          go("#/");
+          return;
+        }
+        if (result !== "created") return;
         return BingoCloud.save(roomCode, KIND, game);
       })
       .catch(function (err) {
@@ -510,6 +535,9 @@
       placeholder: "np. Zosia",
       value: nickDraft,
     });
+    const clash = el("p", {
+      class: nickClash ? "error" : "error hidden",
+    }, nickClash ? ["Pseudonim \"" + nickClash + "\" jest juz zajety. Wybierz inny."] : []);
     const kids = [
       el("h1", null, ["BINGO"]),
       el("p", { class: "lead" }, ["Wpisz pseudonim i dolacz"]),
@@ -517,6 +545,7 @@
         el("span", null, ["Pseudonim"]),
         nickInput,
       ]),
+      clash,
       el("button", {
         class: "role p1 join-btn",
         type: "button",
@@ -526,9 +555,36 @@
             alert("Wpisz pseudonim.");
             return;
           }
+          if (joinBusy) return;
           saveNick(nick);
-          setRole("player");
-          go("#/play");
+          nickClash = "";
+          clash.classList.add("hidden");
+          clash.textContent = "";
+          if (typeof BingoCloud === "undefined") {
+            setRole("player");
+            go("#/play");
+            return;
+          }
+          joinBusy = true;
+          BingoCloud.get(roomCode, KIND)
+            .then(function (remote) {
+              if (remote) acceptIncomingGame(remote);
+              if (nickTakenByOther(nick, playerId)) {
+                nickClash = nick;
+                clash.textContent = "Pseudonim \"" + nick + "\" jest juz zajety. Wybierz inny.";
+                clash.classList.remove("hidden");
+                alert("Pseudonim \"" + nick + "\" jest juz zajety. Wybierz inny.");
+                return;
+              }
+              setRole("player");
+              go("#/play");
+            })
+            .catch(function (err) {
+              alert(err.message || String(err));
+            })
+            .finally(function () {
+              joinBusy = false;
+            });
         },
       }, ["GRACZ"]),
     ];
