@@ -6,8 +6,8 @@ Osobna gra: **własna plansza**, cele odznacza **admin**. Bez kodu pokoju.
 
 [pvmit.github.io/bingo-klasyczne](https://pvmit.github.io/bingo-klasyczne/)
 
-1. Laptop: **ADMINISTRATOR** → **Nowa gra**.
-2. Telefony: ten sam link → pseudonim → **GRACZ**.
+1. Laptop (ukryty panel): [pvmit.github.io/bingo-klasyczne/#/admin](https://pvmit.github.io/bingo-klasyczne/#/admin) → **Nowa gra**.
+2. Telefony: [pvmit.github.io/bingo-klasyczne](https://pvmit.github.io/bingo-klasyczne/) → pseudonim → **GRACZ**.
 
 Baza jest wpisana w repo (`config.json`). Telefony nic nie konfigurują.
 

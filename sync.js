@@ -35,7 +35,7 @@
   function loadConfig() {
     if (config) return Promise.resolve(config);
     if (configPromise) return configPromise;
-    configPromise = fetch("config.json?v=3", { cache: "no-store" })
+    configPromise = fetch("config.json?v=4", { cache: "no-store" })
       .then(function (res) {
         if (!res.ok) return null;
         return res.json();

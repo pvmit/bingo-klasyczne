@@ -445,10 +445,6 @@
       location.replace("#/play");
       return true;
     }
-    if (role === "admin") {
-      location.replace("#/admin");
-      return true;
-    }
     return false;
   }
 
@@ -516,41 +512,25 @@
     });
     const kids = [
       el("h1", null, ["BINGO"]),
-      el("p", { class: "lead" }, ["Wybierz role tego urzadzenia"]),
+      el("p", { class: "lead" }, ["Wpisz pseudonim i dolacz"]),
       el("label", { class: "field" }, [
-        el("span", null, ["Pseudonim (gracz)"]),
+        el("span", null, ["Pseudonim"]),
         nickInput,
       ]),
-      el("div", { class: "role-grid" }, [
-        el("button", {
-          class: "role p1",
-          type: "button",
-          onClick: function () {
-            const nick = nickInput.value.trim();
-            if (!nick) {
-              alert("Wpisz pseudonim.");
-              return;
-            }
-            saveNick(nick);
-            setRole("player");
-            go("#/play");
-          },
-        }, ["GRACZ"]),
-        el("button", {
-          class: "role p2",
-          type: "button",
-          onClick: function () {
-            setRole("admin");
-            go("#/admin");
-          },
-        }, ["ADMINISTRATOR"]),
-      ]),
-      el("p", { class: "hint" }, [
-        "Bez kodu. Wlasna plansza, cele odznacza prowadzacy.",
-      ]),
-      el("p", { class: "hint" }, [
-        el("a", { href: "#/settings" }, ["Ustawienia bazy (Supabase)"]),
-      ]),
+      el("button", {
+        class: "role p1 join-btn",
+        type: "button",
+        onClick: function () {
+          const nick = nickInput.value.trim();
+          if (!nick) {
+            alert("Wpisz pseudonim.");
+            return;
+          }
+          saveNick(nick);
+          setRole("player");
+          go("#/play");
+        },
+      }, ["GRACZ"]),
     ];
     app.replaceChildren(el("section", { class: "screen home" }, kids));
   }
