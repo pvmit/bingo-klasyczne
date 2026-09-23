@@ -427,6 +427,9 @@
       setRole("admin");
       return { view: "admin" };
     }
+    if (parts[0] === "settings") {
+      return { view: "settings" };
+    }
     if (parts[0] === "play") {
       setRole("player");
       return { view: "player" };
@@ -545,8 +548,82 @@
       el("p", { class: "hint" }, [
         "Bez kodu. Wlasna plansza, cele odznacza prowadzacy.",
       ]),
+      el("p", { class: "hint" }, [
+        el("a", { href: "#/settings" }, ["Ustawienia bazy (Supabase)"]),
+      ]),
     ];
     app.replaceChildren(el("section", { class: "screen home" }, kids));
+  }
+
+  function renderSettings() {
+    const cur = (typeof BingoCloud !== "undefined" && BingoCloud.currentPublic()) || {
+      supabaseUrl: "",
+      supabaseAnonKey: "",
+    };
+    const urlInput = el("input", {
+      type: "url",
+      placeholder: "https://xxxx.supabase.co",
+      value: cur.supabaseUrl || "",
+    });
+    const keyInput = el("input", {
+      type: "text",
+      placeholder: "anon public / sb_publishable_…",
+      value: cur.supabaseAnonKey || "",
+    });
+    const status = el("p", { class: "hint" });
+    const linkBox = el("p", { class: "hint" });
+
+    function paintLink() {
+      if (typeof BingoCloud === "undefined") return;
+      const link = BingoCloud.joinUrl();
+      linkBox.replaceChildren();
+      if (!link) return;
+      linkBox.appendChild(document.createTextNode("Link dla telefonow (juz z baza): "));
+      linkBox.appendChild(el("a", { href: link }, [link]));
+    }
+    paintLink();
+
+    app.replaceChildren(
+      el("section", { class: "screen" }, [
+        el("div", { class: "topbar" }, [
+          el("button", {
+            class: "ghost small",
+            type: "button",
+            onClick: function () { go("#/"); },
+          }, ["← Menu"]),
+          el("strong", null, ["USTAWIENIA"]),
+        ]),
+        el("h1", null, ["Baza"]),
+        el("p", { class: "lead" }, [
+          "Stary projekt Conquest juz nie istnieje (adres nie dziala). Zaloz nowy na supabase.com, wklej URL i klucz, uruchom supabase/schema.sql.",
+        ]),
+        el("label", { class: "field" }, [el("span", null, ["Project URL"]), urlInput]),
+        el("label", { class: "field" }, [el("span", null, ["anon / publishable key"]), keyInput]),
+        el("button", {
+          class: "primary",
+          type: "button",
+          onClick: function () {
+            status.textContent = "Sprawdzam…";
+            BingoCloud.testConfig({
+              supabaseUrl: urlInput.value,
+              supabaseAnonKey: keyInput.value,
+            })
+              .then(function () {
+                status.className = "status-ok";
+                status.textContent = "Polaczono. Skopiuj link na telefony.";
+                paintLink();
+              })
+              .catch(function (err) {
+                status.className = "error";
+                status.textContent = err.message || String(err);
+                paintLink();
+              });
+          },
+        }, ["Zapisz i sprawdz"]),
+        status,
+        linkBox,
+      ])
+    );
   }
 
   function renderAdmin() {
@@ -839,7 +916,11 @@
     const r = route();
     if (r.view === "admin") repaint = renderAdmin();
     else if (r.view === "player") repaint = renderPlayer();
-    else {
+    else if (r.view === "settings") {
+      stopSync();
+      repaint = null;
+      renderSettings();
+    } else {
       stopSync();
       repaint = null;
       renderHome();
@@ -866,6 +947,7 @@
 
   try {
     if (!app) throw new Error("Brak #app");
+    if (typeof BingoCloud !== "undefined" && BingoCloud.consumeJoin()) return;
     if (!restoreHashFromStorage()) mount();
   } catch (err) {
     showBootError(err);
