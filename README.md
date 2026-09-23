@@ -6,14 +6,9 @@ Osobna gra: **własna plansza**, cele odznacza **admin**. Bez kodu pokoju.
 
 [pvmit.github.io/bingo-klasyczne](https://pvmit.github.io/bingo-klasyczne/)
 
-1. Laptop: **Ustawienia bazy** (raz) → **ADMINISTRATOR** → **Nowa gra**.
-2. Telefony: ten sam link (albo link skopiowany z ustawień) → pseudonim → **GRACZ**.
+1. Laptop: **ADMINISTRATOR** → **Nowa gra**.
+2. Telefony: ten sam link → pseudonim → **GRACZ**.
 
-## Baza
+Baza jest wpisana w repo (`config.json`). Telefony nic nie konfigurują.
 
-Stary projekt Supabase z Conquest **już nie istnieje** (adres nie rozwiązuje się w DNS). Dlatego było `Failed to fetch`.
-
-1. Załóż darmowy projekt na [supabase.com](https://supabase.com).
-2. SQL Editor → wklej i uruchom [`supabase/schema.sql`](supabase/schema.sql).
-3. Settings → API: **Project URL** + **anon public** / publishable key.
-4. Na stronie bingo: **Ustawienia** → wklej → **Zapisz i sprawdz** → skopiuj link na telefony.
+Jeśli sync zgłosi brak tabeli `bingo_rooms`, w SQL Editorze projektu uruchom [`supabase/schema.sql`](supabase/schema.sql) (raz).

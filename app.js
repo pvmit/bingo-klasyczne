@@ -595,7 +595,7 @@
         ]),
         el("h1", null, ["Baza"]),
         el("p", { class: "lead" }, [
-          "Stary projekt Conquest juz nie istnieje (adres nie dziala). Zaloz nowy na supabase.com, wklej URL i klucz, uruchom supabase/schema.sql.",
+          "Baza jest juz w projekcie. Tu zmieniasz ja tylko gdyby przestal dzialac sync.",
         ]),
         el("label", { class: "field" }, [el("span", null, ["Project URL"]), urlInput]),
         el("label", { class: "field" }, [el("span", null, ["anon / publishable key"]), keyInput]),

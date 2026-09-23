@@ -35,21 +35,16 @@
   function loadConfig() {
     if (config) return Promise.resolve(config);
     if (configPromise) return configPromise;
-    const stored = readStored();
-    if (stored) {
-      config = stored;
-      configPromise = Promise.resolve(stored);
-      return configPromise;
-    }
-    configPromise = fetch("config.json?v=2", { cache: "no-store" })
+    configPromise = fetch("config.json?v=3", { cache: "no-store" })
       .then(function (res) {
         if (!res.ok) return null;
         return res.json();
       })
       .then(function (raw) {
-        config = normalize(raw);
+        const bundled = normalize(raw);
+        config = bundled || readStored();
         if (!config) {
-          throw new Error("Brak bazy. Wejdz w Ustawienia i wklej dane z supabase.com (projekt Conquest juz nie istnieje).");
+          throw new Error("Brak bazy. Wejdz w Ustawienia i wklej dane z supabase.com.");
         }
         return config;
       });
