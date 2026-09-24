@@ -8,7 +8,7 @@
   const GAME_KEY = "bingo.k.game";
   const GOALS_KEY = "bingo.k.goals";
   const GOALS_VER_KEY = "bingo.k.goalsVer";
-  const GOALS_VER = "zjazd-1";
+  const GOALS_VER = "zjazd-2";
   const KIND = "classic";
   const LIVE = "LIVE";
 
